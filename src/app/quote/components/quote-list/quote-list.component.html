@@ -1,15 +1,28 @@
-<input
-  type="text"
-  name="quoteFilter"
-  [(ngModel)]="quoteFilter"
-/>
-<p *ngIf="isLoading">Loading quotes...</p>
-<div *ngIf="!isLoading && quoteList.length > 0">
-  <app-quote-list-item
-    *ngFor="let quote of quoteList | filter:quoteFilter"
-    [quote]="quote"
-  >
-  </app-quote-list-item>
+<div class="container-fluid p-3">
+  <div class="row mb-2">
+    <div class="col-8">
+      <h2>Quotes</h2>
+    </div>
+    <div class="col-4">
+      <input
+        class="form-control"
+        type="text"
+        name="quoteFilter"
+        [(ngModel)]="quoteFilter"
+        placeholder="Filter quotes"
+      />
+    </div>
+
+  </div>
+
+  <app-spinner *ngIf="isLoading"></app-spinner>
+
+  <div class="list-group" *ngIf="!isLoading && quoteList.length > 0">
+    <app-quote-list-item
+      *ngFor="let quote of quoteList | filter:quoteFilter"
+      [quote]="quote"></app-quote-list-item>
+  </div>
+
+  <div class="alert alert-danger" *ngIf="error">Error getting Quotes...</div>
+
 </div>
-<p *ngIf="error">Error getting Quotes...</p>
-<button routerLink="new">New Quote</button>

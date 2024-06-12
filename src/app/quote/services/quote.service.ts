@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import {Product} from "../models/product.model";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {catchError, map, throwError} from "rxjs";
-import {Quote} from "../models/quote.model";
-import {AuthService} from "../../auth/services/auth.service";
+import {BehaviorSubject, catchError, map, Subject, tap, throwError} from "rxjs";
+import {IQuote, Quote} from "../models/quote.model";
 import {environment} from "../../../environments/environment";
+import {Router} from "@angular/router";
 
 interface QuoteResponse {
-  [key: string]: Quote;
+  [key: string]: IQuote;
 }
 
 @Injectable({
@@ -15,58 +15,72 @@ interface QuoteResponse {
 })
 export class QuoteService {
 
-  quoteList: any[] = []
+  quoteListSub = new BehaviorSubject<IQuote[]>([])
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
+    private router: Router
   ) { }
 
   getQuoteList() {
-    return this.http.get<QuoteResponse>(`${environment.firebaseDbUrl}quotes.json`)
-      .pipe(
-        map(res => {
-          console.log(res)
-          let quotes: any[] = []
-          Object.entries(res).map(([key, value]) => {
-            quotes.push({
-              id: key,
-              ...value
-            });
-          })
-          this.quoteList = quotes;
-          return {
-            error: false,
-            data: quotes
-          }
-        }),
-        catchError(this.handleError)
+    return this.http.get<QuoteResponse>(`${environment.firebaseDbUrl}quotes.json`).pipe(
+      map(data => {
+        let quotes: IQuote[] = []
+        Object.entries(data).map(([key, value]) => {
+          quotes.push({
+            id: key,
+            ...value
+          });
+        })
+        this.quoteListSub.next(quotes)
+      }),
+      catchError(this.handleError)
     )
   }
 
-  handleError(error: HttpErrorResponse) {
-    return throwError(() => new Error(error.message));
+  getQuoteListSubject() {
+    return this.quoteListSub.asObservable();
   }
 
   getQuoteById(id: string) {
-    return this.quoteList.find(q => q.id === id)
+    return this.quoteListSub.value.find(q => q.id === id)
   }
 
-  addQuote(quote: string) {
-    this.quoteList.push({
-      id: (this.quoteList.length + 1).toString(),
-      name: quote,
-      tier: 'basic',
-      extras: []
-    })
+  addQuote(quote: IQuote) {
+    return this.http.post<any>(
+      `${environment.firebaseDbUrl}quotes.json`, quote).pipe(
+        catchError(this.handleError),
+      tap((data) => {
+        console.log(data)
+        const newQuote = {
+          id: data.name,
+          ...quote
+        }
+        const updatedQuoteList = [...this.quoteListSub.value, newQuote]
+        this.quoteListSub.next(updatedQuoteList)
+      })
+    )
   }
 
-  updateQuote(id: string, quoteName: string) {
-    this.quoteList.map((quote) => {
-      if (quote.id === id) {
-        quote.name = quoteName
-      }
-    })
+  deleteQuote(id: string) {
+    return this.http.delete<void>(`
+    ${environment.firebaseDbUrl}quotes/${id}.json`).pipe(
+      catchError(this.handleError),
+      tap(() => {
+        const updatedQuoteList = this.quoteListSub.value.filter(q => q.id !== id);
+        this.quoteListSub.next(updatedQuoteList);
+      })
+    )
+  }
+
+  updateQuote(quote: IQuote) {
+    return this.http.put<void>(`${environment.firebaseDbUrl}quotes/${quote.id}.json`, quote).pipe(
+      tap(() => {
+        const updatedQuotes = this.quoteListSub.value.map((q) => (q.id === quote.id) ? quote : q)
+        console.log(updatedQuotes)
+        this.quoteListSub.next(updatedQuotes)
+      })
+    );
   }
 
   calculateFinalPrice(product: Product): number {
@@ -95,5 +109,9 @@ export class QuoteService {
     // Apply any region-specific adjustments
 
     return totalPrice;
+  }
+
+  handleError(error: HttpErrorResponse) {
+    return throwError(() => new Error(error.message));
   }
 }

@@ -1,35 +1,44 @@
-<form [formGroup]="quoteForm" (ngSubmit)="updateQuote()">
+<div class="p-3">
+  <h2 class="mb-3">Edit Quote</h2>
+  <form
+    [formGroup]="quoteForm"
+    (ngSubmit)="updateQuote()"
+  >
+    <label class="form-label">Name</label>
     <input
+      class="form-control mb-2"
       type="text"
       name="quoteName"
       formControlName="quoteName"
     />
-    <p *ngIf="quoteForm.get('quoteName')?.errors?.['required'] && quoteForm.get('quoteName')?.touched">Please add a name to the quote</p>
-    <p *ngIf="quoteForm.get('quoteName')?.errors?.['forbiddenName']">Invalid name</p>
-    <p *ngIf="quoteForm.get('quoteName')?.errors?.['minlength']">Min length is 3</p>
-
+    <div class="mt-2" *ngIf="!quoteForm.get('quoteName')?.valid && quoteForm.get('quoteName')?.touched">
+      <span class="text-danger" *ngIf="quoteForm.get('quoteName')?.errors?.['required'] ">Please add a name to the quote. </span>
+      <span class="text-danger" *ngIf="quoteForm.get('quoteName')?.errors?.['forbiddenName']">Invalid name. </span>
+      <span class="text-danger" *ngIf="quoteForm.get('quoteName')?.errors?.['minlength']">Min length is 3. </span>
+    </div>
+    <label class="form-label">Tier</label>
     <div *ngFor="let tier of tiers">
-        <label>
-          <input
-            type="radio"
-            [value]="tier"
-            formControlName="tier"
-          />
-          {{tier}}
-        </label>
-      </div>
-    <h2>Extras</h2>
+      <label>
+        <input
+          class="form-check-input mb-2"
+          type="radio"
+          [value]="tier"
+          formControlName="tier"
+        />
+        {{tier}}
+      </label>
+    </div>
+    <label class="form-label">Extras</label>
     <div formArrayName="extras">
-      <button type="button" (click)="addExtra()">Add Extra</button>
-      <div *ngFor="let extraControl of extras.controls; let i = index">
-        <input type="text" [formControlName]="i">
+      <button class="btn btn-secondary mb-2" type="button" (click)="addExtra('')">Add Extra</button>
+      <div class="d-flex mb-2" *ngFor="let extraControl of extras.controls; let i = index">
+        <input class="form-control me-2" type="text" [formControlName]="i">
+        <button class="btn btn-danger" type="button" (click)="removeExtra(i)"><i class="bi-trash"></i></button>
       </div>
     </div>
-    <button [disabled]="!quoteForm.valid" >Save</button>
-</form>
-<button (click)="openModal()">Launch modal</button>
-<app-modal
-  [message]="'This is a modal'"
-  [isVisible]="isModalVisible"
-  (closeModal)="closeModal()"
-></app-modal>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-primary" [disabled]="!quoteForm.valid" >Save</button>
+    </div>
+  </form>
+</div>
+

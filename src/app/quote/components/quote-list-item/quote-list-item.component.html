@@ -1,4 +1,7 @@
-<div class="list-item" appSelectedQuote>
-  <input type="checkbox" />
-  <a [routerLink]="['/quotes', quote.id]">{{ quote.name | shorten: 15 }}</a>
+<div class="list-group-item d-flex justify-content-between align-items-center mb-2" appSelectedQuote>
+  <div>
+    <input class="form-check-input me-3" type="checkbox" />
+    <a class="link-light" [routerLink]="['/quotes', quote.id]">{{ quote.name | shorten: 15 }}</a>
+  </div>
+  <button class="btn btn-danger" (click)="deleteQuote()"><i class="bi-trash"></i></button>
 </div>

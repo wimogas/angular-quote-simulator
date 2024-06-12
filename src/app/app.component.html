@@ -1,12 +1,14 @@
-<nav>
-  <div>
-    <a routerLink="/quotes"><h1>{{ title }}</h1></a>
-    <div *ngIf="isAuth">
-      <a routerLink="/quotes">Quotes</a>
-      <a routerLink="/quotes/new">New Quote</a>
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+    <a class="navbar-brand" routerLink="/quotes"><h1>{{ title }}</h1></a>
+    <div class="d-flex">
+    <ng-container *ngIf="isAuth">
+      <a class="btn btn-dark me-2" routerLink="/quotes">Quotes</a>
+      <a class="btn btn-success me-2" routerLink="/quotes/new"><i class="bi-plus-lg"></i> New Quote</a>
+    </ng-container>
+    <button class="btn btn-dark me-2" (click)="login()" *ngIf="!isAuth">Log in</button>
+    <button class="btn btn-secondary" (click)="logout()" *ngIf="isAuth">Log out</button>
     </div>
   </div>
-  <button (click)="login()" *ngIf="!isAuth">Log in</button>
-  <button (click)="logout()" *ngIf="isAuth">Log out</button>
 </nav>
 <router-outlet></router-outlet>

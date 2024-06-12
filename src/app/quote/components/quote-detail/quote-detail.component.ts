@@ -1,37 +1,36 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
   ActivatedRoute,
   Router,
 } from "@angular/router";
 import {QuoteService} from "../../services/quote.service";
 import {
-  AbstractControl,
   FormArray,
   FormControl,
   FormGroup,
-  ValidatorFn,
   Validators
 } from "@angular/forms";
-import {Quote} from "../../models/quote.model";
+import {IQuote} from "../../models/quote.model";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-quote-detail',
   templateUrl: './quote-detail.component.html',
   styleUrl: './quote-detail.component.scss'
 })
-export class QuoteDetailComponent implements OnInit {
-  quote?: Quote;
+export class QuoteDetailComponent implements OnInit, OnDestroy {
+  quote?: IQuote;
   tiers: string[] = ['basic', 'premium', 'enterprise']
   changesSaved: boolean = false;
   quoteForm!: FormGroup
-  isModalVisible: boolean = false;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private quoteService: QuoteService) {
     this.quoteForm = new FormGroup<any>({
-      quoteName: new FormControl('', [Validators.required, Validators.minLength(3), this.forbiddenNameValidator(/bob/i)]),
+      quoteName: new FormControl('', [Validators.required, Validators.minLength(3)]),
       tier: new FormControl('', Validators.required),
       extras: new FormArray([])
     })
@@ -40,11 +39,15 @@ export class QuoteDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.params.subscribe((data) => {
       const foundQuote = this.quoteService.getQuoteById(data['id'])
-      console.log(foundQuote)
       if (foundQuote) {
         this.quote = foundQuote
         this.quoteForm.get('quoteName')?.setValue(foundQuote.name)
         this.quoteForm.get('tier')?.setValue(foundQuote.tier)
+        if (foundQuote.extras) {
+          foundQuote.extras.forEach(extra => {
+            this.addExtra(extra);
+          });
+        }
       } else {
         this.router.navigate(['/quotes'])
       }
@@ -56,7 +59,10 @@ export class QuoteDetailComponent implements OnInit {
       this.changesSaved = true
       this.quote.name = this.quoteForm.value.quoteName
       this.quote.tier = this.quoteForm.value.tier
-      this.quoteService.updateQuote(this.quote.id!, this.quote.name)
+      this.quote.extras = this.quoteForm.value.extras
+      this.subscriptions.push(
+        this.quoteService.updateQuote(this.quote).subscribe()
+      )
     }
     this.router.navigate(['../'], {relativeTo: this.route})
   }
@@ -65,23 +71,15 @@ export class QuoteDetailComponent implements OnInit {
     return this.quoteForm.get('extras') as FormArray
   }
 
-  addExtra() {
-    this.extras.push(new FormControl(''))
+  addExtra(value: string) {
+    this.extras.push(new FormControl(value))
   }
 
-  forbiddenNameValidator(nameRe: RegExp): ValidatorFn {
-    return (control: AbstractControl): { [key: string]: any } | null => {
-      const forbidden = nameRe.test(control.value);
-      return forbidden ? { 'forbiddenName': { value: control.value } } : null;
-    };
+  removeExtra(i: number) {
+    this.extras.removeAt(i)
   }
 
-  openModal() {
-    this.isModalVisible = true;
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe())
   }
-
-  closeModal() {
-    this.isModalVisible = false;
-  }
-
 }

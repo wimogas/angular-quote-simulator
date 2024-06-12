@@ -1,4 +1,4 @@
-export interface Quote {
+export interface IQuote {
   id?: string,
   name: string,
   tier: 'basic' | 'premium' |'enterprise',
@@ -6,4 +6,16 @@ export interface Quote {
   company?: string,
   productId?: string,
   totalPrice?: number
+}
+
+export class Quote {
+  constructor(
+    public name: string = '',
+    public tier: 'basic' | 'premium' |'enterprise' = 'basic',
+    public extras: string[] = [],
+    public company?: string,
+    public productId?: string,
+    public totalPrice?: number,
+  ) {
+  }
 }

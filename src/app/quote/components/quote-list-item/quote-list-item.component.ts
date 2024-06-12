@@ -1,11 +1,29 @@
-import {Component, Input} from '@angular/core';
-import {Quote} from "../../models/quote.model";
+import {Component, Input, OnDestroy} from '@angular/core';
+import {IQuote} from "../../models/quote.model";
+import {QuoteService} from "../../services/quote.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-quote-list-item',
   templateUrl: './quote-list-item.component.html',
   styleUrl: './quote-list-item.component.scss'
 })
-export class QuoteListItemComponent {
-  @Input() quote!: Quote;
+export class QuoteListItemComponent implements OnDestroy{
+  @Input() quote!: IQuote;
+  private subscriptions: Subscription[] = [];
+
+  constructor(
+    private quoteService: QuoteService,
+  ) {
+  }
+
+  deleteQuote() {
+    this.subscriptions.push(
+      this.quoteService.deleteQuote(this.quote!.id!).subscribe()
+    )
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe())
+  }
 }

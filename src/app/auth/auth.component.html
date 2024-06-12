@@ -1,34 +1,37 @@
-<div class="login-container">
-  <h2>{{isSignUp ? 'Sign up' : 'Log in'}}</h2>
-  <div
-    class="error-alert"
-    *ngIf="error">
-    <p>{{error}}</p>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header">
+          <h2>{{isSignUp ? 'Sign up' : 'Log in'}}</h2>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-danger" role="alert" *ngIf="error">
+            {{error}}
+          </div>
+          <app-spinner *ngIf="isLoading"></app-spinner>
+          <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input class="form-control" type="text" id="email" formControlName="email">
+            </div>
+            <div class="form-group mt-3">
+              <label for="password">Password</label>
+              <input class="form-control" type="password" id="password" formControlName="password">
+            </div>
+            <div *ngIf="isSignUp" class="form-group mt-3">
+              <label for="password2">Password 2</label>
+              <input class="form-control" type="password" id="password2" formControlName="password2">
+            </div>
+            <div class="col mt-3">
+              <button class="btn btn-primary btn-block me-2" type="submit">
+                {{ isSignUp ? 'Sign up' : 'Log in' }}
+              </button>
+              <button class="btn btn-link btn-block" type="button" (click)="switchMode()">{{ isSignUp ? 'Log in' : 'Create account' }}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </div>
-  <app-spinner
-    *ngIf="isLoading"
-  ></app-spinner>
-  <form
-    [formGroup]="authForm"
-    (ngSubmit)="onSubmit()"
-  >
-    <div>
-      <label for="email">Email</label>
-      <input type="text" id="email" formControlName="email">
-    </div>
-    <div>
-      <label for="password">Password</label>
-      <input type="password" id="password" formControlName="password">
-    </div>
-    <div *ngIf="isSignUp">
-      <label for="password2">Password 2</label>
-      <input type="password" id="password2" formControlName="password2">
-    </div>
-    <div class="btns">
-      <button type="submit">
-        {{ isSignUp ? 'Sign up' : 'Log in' }}
-      </button>
-      <button class="btn-switch" type="button" (click)="switchMode()">{{ isSignUp ? 'Log in' : 'Create account' }}</button>
-    </div>
-  </form>
 </div>

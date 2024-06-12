@@ -13,6 +13,7 @@ export class QuoteListResolverService implements Resolve<any>{
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<any> {
+    console.log("resolving...")
     return this.quoteService.getQuoteList().pipe(
       catchError(error => {
         return of({

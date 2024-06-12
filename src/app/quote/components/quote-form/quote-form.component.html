@@ -1,8 +1,45 @@
-<input
-  #quoteName
-  placeholder="Quote Name"
-/>
-<button
-  (click)="addQuote()">
-  Add Quote
-</button>
+<div class="p-3">
+  <h2 class="mb-3">New Quote</h2>
+  <div class="alert alert-danger" *ngIf="error">Error getting Quotes...</div>
+  <form
+    [formGroup]="newQuoteForm"
+    (ngSubmit)="addQuote()"
+  >
+    <label class="form-label">Name</label>
+    <input
+      class="form-control mb-2"
+      type="text"
+      name="quoteName"
+      formControlName="quoteName"
+    />
+    <div class="mt-2" *ngIf="!newQuoteForm.get('quoteName')?.valid && newQuoteForm.get('quoteName')?.touched">
+      <span class="text-danger" *ngIf="newQuoteForm.get('quoteName')?.errors?.['required'] ">Please add a name to the quote. </span>
+      <span class="text-danger" *ngIf="newQuoteForm.get('quoteName')?.errors?.['forbiddenName']">Invalid name. </span>
+      <span class="text-danger" *ngIf="newQuoteForm.get('quoteName')?.errors?.['minlength']">Min length is 3. </span>
+    </div>
+    <label class="form-label">Tier</label>
+    <div *ngFor="let tier of tiers">
+      <label>
+        <input
+          class="form-check-input mb-2"
+          type="radio"
+          [value]="tier"
+          formControlName="tier"
+        />
+        {{tier}}
+      </label>
+    </div>
+    <label class="form-label">Extras</label>
+    <div formArrayName="extras">
+      <button class="btn btn-secondary mb-2" type="button" (click)="addExtra()">Add Extra</button>
+      <div class="d-flex mb-2" *ngFor="let extraControl of extras.controls; let i = index">
+        <input class="form-control me-2" type="text" [formControlName]="i">
+        <button class="btn btn-danger" type="button" (click)="removeExtra(i)"><i class="bi-trash"></i></button>
+      </div>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-success" [disabled]="!newQuoteForm.valid" >Add</button>
+    </div>
+  </form>
+</div>
+
