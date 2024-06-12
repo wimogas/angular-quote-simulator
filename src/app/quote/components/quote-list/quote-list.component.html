@@ -20,9 +20,23 @@
   <div class="list-group" *ngIf="!isLoading && quoteList.length > 0">
     <app-quote-list-item
       *ngFor="let quote of quoteList | filter:quoteFilter"
-      [quote]="quote"></app-quote-list-item>
+      [quote]="quote"
+      (modalLaunched)="onModalLaunched($event)"></app-quote-list-item>
   </div>
-
   <div class="alert alert-danger" *ngIf="error">Error getting Quotes...</div>
-
 </div>
+<ng-container *ngIf="isModalVisible">
+  <app-modal
+    title="Deleting Quote"
+    (onCloseModal)="closeModal()"
+  >
+    <div class="d-flex justify-content-start mb-4">
+      <p>Are you sure?</p>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-secondary me-2" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-danger" (click)="deleteQuote()">Delete</button>
+    </div>
+  </app-modal>
+</ng-container>
+

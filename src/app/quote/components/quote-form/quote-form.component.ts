@@ -38,8 +38,6 @@ export class QuoteFormComponent implements OnDestroy {
     this.subscriptions.push(
       this.quoteService.addQuote(this.quote).subscribe()
     )
-
-    this.router.navigate(['../'], {relativeTo: this.route})
   }
 
   get extras(): FormArray {

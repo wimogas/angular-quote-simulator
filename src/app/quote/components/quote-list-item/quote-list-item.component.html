@@ -3,5 +3,5 @@
     <input class="form-check-input me-3" type="checkbox" />
     <a class="link-light" [routerLink]="['/quotes', quote.id]">{{ quote.name | shorten: 15 }}</a>
   </div>
-  <button class="btn btn-danger" (click)="deleteQuote()"><i class="bi-trash"></i></button>
+  <button class="btn btn-danger" (click)="showModal()"><i class="bi-trash"></i></button>
 </div>

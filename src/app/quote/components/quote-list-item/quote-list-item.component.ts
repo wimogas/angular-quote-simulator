@@ -1,29 +1,18 @@
-import {Component, Input, OnDestroy} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
 import {IQuote} from "../../models/quote.model";
-import {QuoteService} from "../../services/quote.service";
-import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-quote-list-item',
   templateUrl: './quote-list-item.component.html',
   styleUrl: './quote-list-item.component.scss'
 })
-export class QuoteListItemComponent implements OnDestroy{
+export class QuoteListItemComponent {
   @Input() quote!: IQuote;
-  private subscriptions: Subscription[] = [];
+  @Output() modalLaunched = new EventEmitter();
 
-  constructor(
-    private quoteService: QuoteService,
-  ) {
-  }
+  constructor() {}
 
-  deleteQuote() {
-    this.subscriptions.push(
-      this.quoteService.deleteQuote(this.quote!.id!).subscribe()
-    )
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe())
+  showModal() {
+    this.modalLaunched.emit(this.quote!.id!)
   }
 }

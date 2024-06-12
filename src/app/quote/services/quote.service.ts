@@ -51,13 +51,13 @@ export class QuoteService {
       `${environment.firebaseDbUrl}quotes.json`, quote).pipe(
         catchError(this.handleError),
       tap((data) => {
-        console.log(data)
         const newQuote = {
           id: data.name,
           ...quote
         }
         const updatedQuoteList = [...this.quoteListSub.value, newQuote]
         this.quoteListSub.next(updatedQuoteList)
+        return this.router.navigate(['/quotes'])
       })
     )
   }

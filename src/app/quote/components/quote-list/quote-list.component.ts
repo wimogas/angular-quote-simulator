@@ -13,6 +13,9 @@ export class QuoteListComponent implements OnInit, OnDestroy {
   quoteFilter: string = '';
   isLoading: boolean = false;
   error: string | null = null
+  isModalVisible: boolean = false;
+  deleteQuoteId: string = ''
+
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -28,6 +31,22 @@ export class QuoteListComponent implements OnInit, OnDestroy {
     )
 
     this.quoteService.getQuoteList().subscribe()
+  }
+
+  closeModal() {
+    this.isModalVisible = false
+  }
+
+  onModalLaunched(id: string) {
+    this.isModalVisible = true
+    this.deleteQuoteId = id
+  }
+
+  deleteQuote() {
+    this.subscriptions.push(
+      this.quoteService.deleteQuote(this.deleteQuoteId).subscribe()
+    )
+    this.isModalVisible = false;
   }
 
   ngOnDestroy() {

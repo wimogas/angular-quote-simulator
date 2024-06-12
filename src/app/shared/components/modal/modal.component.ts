@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-modal',
@@ -7,13 +6,10 @@ import {NgIf} from "@angular/common";
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent {
-  @Input() isVisible: boolean = false;
-  @Input() message: string = ''
+  @Input() title: string = 'Modal'
+  @Output() onCloseModal = new EventEmitter<void>();
 
-  @Output() closeModal = new EventEmitter<void>();
-
-  close() {
-    this.isVisible = false;
-    this.closeModal.emit();
+  onClose() {
+    this.onCloseModal.emit();
   }
 }
