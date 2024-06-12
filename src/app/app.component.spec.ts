@@ -4,10 +4,13 @@ import {BrowserModule} from "@angular/platform-browser";
 import {RouterOutlet} from "@angular/router";
 import {AppRoutingModule} from "./app-routing.module";
 import {SharedModule} from "./shared/shared.module";
-import {HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi} from "@angular/common/http";
-import {AuthInterceptor} from "./auth/interceptors/auth-interceptor.service";
+import {AuthService} from "./auth/services/auth.service";
+import {AuthMockService} from "../mocks/auth-mock.service";
 
-describe('AppComponent', () => {
+fdescribe('AppComponent', () => {
+  let fixture;
+  let app: AppComponent;
+  let authService: AuthService
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AppComponent],
@@ -18,19 +21,35 @@ describe('AppComponent', () => {
         SharedModule
       ],
       providers: [
-        provideHttpClient(withInterceptorsFromDi()),
         {
-          provide: HTTP_INTERCEPTORS,
-          useClass: AuthInterceptor,
-          multi: true
-        },
+          provide: AuthService,
+          useClass: AuthMockService
+        }
       ]
     }).compileComponents();
+    fixture = TestBed.createComponent(AppComponent);
+    app = fixture.componentInstance;
+    authService = TestBed.inject(AuthService)
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('should have a title', () => {
+    expect(app.title).toBe("Quote Simulator");
+  });
+
+  it('should initialize user as null', () => {
+    authService.user.subscribe(user =>{
+      expect(user).toBeNull();
+    })
+  });
+
+  it('should get user after OnInit', () => {
+    app.ngOnInit()
+    authService.user.subscribe(user => {
+      expect(user?.email).toBe("email@email.com")
+    })
   });
 });
