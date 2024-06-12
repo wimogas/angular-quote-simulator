@@ -1,27 +1,59 @@
-# QuoteSimulator
+# Quote Simulator
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.3.
+This project is a Front-End Web application developed using Angular version 18.0.0 and TypeScript version 5.4.2. The Quote Simulator is designed to facilitate and simulate the retrieval of quotes for various products or services. It aims to provide users with an interactive and user-friendly experience to simulate estimates for their required services/products and help them make informed decisions.
 
-## Development server
+## Getting Started
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-## Code scaffolding
+### Prerequisites
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Things you need to install the software:
 
-## Build
+- Node.js and npm
+- Angular v18.0.0
+- TypeScript v5.4.2
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Install
 
-## Running unit tests
+A step by step explanation of how to get a development environment running:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```bash
+npm install
+```
 
-## Running end-to-end tests
+### Development
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+```bash
+npm start
+```
 
-## Further help
+## Running the tests
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+How to run the automated tests for this system
+
+```bash
+npm test
+```
+
+## Deployment
+
+How to deploy this on a live system.
+
+```bash
+npm build
+```
+
+## Built With
+
+- [Angular](https://angular.io/) - The web framework used
+- [npm](https://www.npmjs.com/) - Dependency Management
+- [TypeScript](https://www.typescriptlang.org/) - Used for static typing JavaScript codes.
+
+## Authors
+
+Guillem Moya
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
