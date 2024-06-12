@@ -1,0 +1,4 @@
+<div class="list-item" appSelectedQuote>
+  <input type="checkbox" />
+  <a [routerLink]="['/quotes', quote.id]">{{ quote.name | shorten: 15 }}</a>
+</div>

@@ -1,13 +1,42 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AuthService} from "./auth/services/auth.service";
+import {Subscription} from "rxjs";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'quote-simulator';
+export class AppComponent implements OnInit, OnDestroy {
+  title = 'Quote Simulator';
+  isAuth = false;
+  private userSubscription!: Subscription;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+  ) {}
+
+  ngOnInit() {
+    this.authService.checkAuth()
+    this.userSubscription = this.authService.user.subscribe(
+      user => {
+        this.isAuth = !!user;
+      }
+    )
+  }
+
+  login() {
+    this.router.navigate(['/auth']);
+  }
+
+  logout() {
+    this.isAuth = false;
+    this.authService.logout()
+  }
+
+  ngOnDestroy() {
+    this.userSubscription.unsubscribe();
+  }
 }

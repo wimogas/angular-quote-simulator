@@ -1,0 +1,15 @@
+<input
+  type="text"
+  name="quoteFilter"
+  [(ngModel)]="quoteFilter"
+/>
+<p *ngIf="isLoading">Loading quotes...</p>
+<div *ngIf="!isLoading && quoteList.length > 0">
+  <app-quote-list-item
+    *ngFor="let quote of quoteList | filter:quoteFilter"
+    [quote]="quote"
+  >
+  </app-quote-list-item>
+</div>
+<p *ngIf="error">Error getting Quotes...</p>
+<button routerLink="new">New Quote</button>

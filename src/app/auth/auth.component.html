@@ -1,0 +1,34 @@
+<div class="login-container">
+  <h2>{{isSignUp ? 'Sign up' : 'Log in'}}</h2>
+  <div
+    class="error-alert"
+    *ngIf="error">
+    <p>{{error}}</p>
+  </div>
+  <app-spinner
+    *ngIf="isLoading"
+  ></app-spinner>
+  <form
+    [formGroup]="authForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <div>
+      <label for="email">Email</label>
+      <input type="text" id="email" formControlName="email">
+    </div>
+    <div>
+      <label for="password">Password</label>
+      <input type="password" id="password" formControlName="password">
+    </div>
+    <div *ngIf="isSignUp">
+      <label for="password2">Password 2</label>
+      <input type="password" id="password2" formControlName="password2">
+    </div>
+    <div class="btns">
+      <button type="submit">
+        {{ isSignUp ? 'Sign up' : 'Log in' }}
+      </button>
+      <button class="btn-switch" type="button" (click)="switchMode()">{{ isSignUp ? 'Log in' : 'Create account' }}</button>
+    </div>
+  </form>
+</div>

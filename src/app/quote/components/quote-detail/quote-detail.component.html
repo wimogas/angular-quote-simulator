@@ -1,0 +1,35 @@
+<form [formGroup]="quoteForm" (ngSubmit)="updateQuote()">
+    <input
+      type="text"
+      name="quoteName"
+      formControlName="quoteName"
+    />
+    <p *ngIf="quoteForm.get('quoteName')?.errors?.['required'] && quoteForm.get('quoteName')?.touched">Please add a name to the quote</p>
+    <p *ngIf="quoteForm.get('quoteName')?.errors?.['forbiddenName']">Invalid name</p>
+    <p *ngIf="quoteForm.get('quoteName')?.errors?.['minlength']">Min length is 3</p>
+
+    <div *ngFor="let tier of tiers">
+        <label>
+          <input
+            type="radio"
+            [value]="tier"
+            formControlName="tier"
+          />
+          {{tier}}
+        </label>
+      </div>
+    <h2>Extras</h2>
+    <div formArrayName="extras">
+      <button type="button" (click)="addExtra()">Add Extra</button>
+      <div *ngFor="let extraControl of extras.controls; let i = index">
+        <input type="text" [formControlName]="i">
+      </div>
+    </div>
+    <button [disabled]="!quoteForm.valid" >Save</button>
+</form>
+<button (click)="openModal()">Launch modal</button>
+<app-modal
+  [message]="'This is a modal'"
+  [isVisible]="isModalVisible"
+  (closeModal)="closeModal()"
+></app-modal>

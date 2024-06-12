@@ -1,0 +1,105 @@
+.login-container {
+  position: relative;
+  margin: 50px auto;
+  padding: 30px;
+  width: 300px;
+  max-width: 90%;
+  background: rgba(255, 255, 255, 0.1); // Semi-transparent background
+  border-radius: 15px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); // Soft shadow
+  backdrop-filter: blur(10px); // Blur effect for glassiness
+  -webkit-backdrop-filter: blur(10px); // Blur effect for Safari
+  border: 1px solid rgba(255, 255, 255, 0.2); // Border for glass effect
+  color: #fff; // Text color
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    div {
+      margin-bottom: 15px;
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #ddd; // Light color for labels
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.2); // Semi-transparent input background
+        color: #fff; // White text for inputs
+        font-size: 16px;
+
+        &:focus {
+          outline: none;
+          background: rgba(255, 255, 255, 0.3); // Slightly darker on focus
+        }
+      }
+    }
+
+    button {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      color: #fff; // White text for buttons
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+  }
+
+  .btns {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .btn-switch {
+    background-color: transparent;
+  }
+}
+
+.error-alert {
+  position: relative;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: #f8d7da; /* Light red background */
+  color: #721c24; /* Dark red text */
+  border-color: #f5c6cb; /* Light red border */
+  font-size: 16px;
+}
+
+.error-alert h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.error-alert p {
+  margin: 0;
+}
+
+.error-alert .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #721c24; /* Dark red for close button */
+}
+
+.error-alert .close-btn:hover {
+  color: #491217; /* Darker red on hover */
+}
