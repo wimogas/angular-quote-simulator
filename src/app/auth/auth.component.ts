@@ -1,10 +1,8 @@
 import {Component} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {CommonModule, NgIf} from "@angular/common";
 import {AuthResponseData, AuthService} from "./services/auth.service";
 import {Observable} from "rxjs";
 import {Router} from "@angular/router";
-import {SharedModule} from "../shared/shared.module";
 
 @Component({
   selector: 'app-auth',

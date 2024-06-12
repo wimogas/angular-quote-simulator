@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { QuoteComponent } from './quote.component';
+import {QuoteRoutingModule} from "./quote-routing.module";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {SharedModule} from "../shared/shared.module";
 
 describe('QuoteComponent', () => {
   let component: QuoteComponent;
@@ -8,7 +11,13 @@ describe('QuoteComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [QuoteComponent]
+      declarations: [QuoteComponent],
+      imports: [
+        QuoteRoutingModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SharedModule
+      ],
     })
     .compileComponents();
 

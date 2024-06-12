@@ -1,33 +1,32 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { QuoteDetailComponent } from './quote-detail.component';
+import { QuoteFormComponent } from './quote-form.component';
 import {QuoteRoutingModule} from "../../quote-routing.module";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SharedModule} from "../../../shared/shared.module";
-import {ActivatedRoute, RouterModule} from "@angular/router";
-import {RouterTestingModule} from "@angular/router/testing";
 import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {RouterModule} from "@angular/router";
+import {RouterTestingModule} from "@angular/router/testing";
 
-describe('QuoteDetailComponent', () => {
-  let component: QuoteDetailComponent;
-  let fixture: ComponentFixture<QuoteDetailComponent>;
+describe('QuoteFormComponent', () => {
+  let component: QuoteFormComponent;
+  let fixture: ComponentFixture<QuoteFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [QuoteDetailComponent],
+      declarations: [QuoteFormComponent],
       imports: [
-        RouterModule,
         QuoteRoutingModule,
         FormsModule,
         ReactiveFormsModule,
         SharedModule,
-        RouterTestingModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        RouterTestingModule
       ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(QuoteDetailComponent);
+    fixture = TestBed.createComponent(QuoteFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

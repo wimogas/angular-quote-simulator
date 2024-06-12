@@ -1,13 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 
-import { DidSaveChangesService } from './did-save-changes.service';
+import {DidSaveChangesGuard} from './did-save-changes.service';
+import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 describe('DidSaveChangesService', () => {
-  let service: DidSaveChangesService;
+  let service: DidSaveChangesGuard;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(DidSaveChangesService);
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule]
+    });
+    service = TestBed.inject(DidSaveChangesGuard);
   });
 
   it('should be created', () => {

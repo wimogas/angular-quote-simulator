@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SpinnerComponent } from './spinner.component';
+import {CommonModule} from "@angular/common";
 
 describe('SpinnerComponent', () => {
   let component: SpinnerComponent;
@@ -8,7 +9,10 @@ describe('SpinnerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SpinnerComponent]
+      declarations: [SpinnerComponent],
+      imports: [
+        CommonModule
+      ]
     })
     .compileComponents();
 
