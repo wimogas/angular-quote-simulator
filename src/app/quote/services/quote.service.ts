@@ -5,6 +5,7 @@ import {BehaviorSubject, catchError, map, Subject, tap, throwError} from "rxjs";
 import {IQuote, Quote} from "../models/quote.model";
 import {environment} from "../../../environments/environment";
 import {Router} from "@angular/router";
+import {AuthService} from "../../auth/services/auth.service";
 
 interface QuoteResponse {
   [key: string]: IQuote;
@@ -20,25 +21,29 @@ export class QuoteService {
   page = 1;
   limit = 10;
   totalCount = 0;
+  userId = ''
 
   constructor(
     private http: HttpClient,
-    private router: Router
-  ) { }
+    private router: Router,
+    private authService: AuthService
+  ) {
+    this.userId = this.authService.user.value!.id
+  }
 
   getQuoteList() {
-    return this.http.get<QuoteResponse>(`${environment.firebaseDbUrl}quotes.json`).pipe(
+    return this.http.get<QuoteResponse>(`${environment.firebaseDbUrl}${this.userId}/quotes.json`).pipe(
       map(data => {
-        let quotes: IQuote[] = []
-        Object.entries(data).map(([key, value]) => {
-          quotes.push({
-            id: key,
-            ...value
-          });
-        })
-        this.quoteListSub.next(quotes)
-        this.totalCount = this.quoteListSub.value.length
-        this.filteredQuoteList.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
+          let quotes: IQuote[] = []
+          Object.entries(data).map(([key, value]) => {
+            quotes.push({
+              id: key,
+              ...value
+            });
+          })
+          this.quoteListSub.next(quotes)
+          this.totalCount = this.quoteListSub.value.length
+          this.filteredQuoteList.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
       }),
       catchError(this.handleError)
     )
@@ -53,9 +58,9 @@ export class QuoteService {
   }
 
   addQuote(quote: IQuote) {
-    console.log(quote)
+    quote.userId = this.authService.user.value!.id
     return this.http.post<any>(
-      `${environment.firebaseDbUrl}quotes.json`, quote).pipe(
+      `${environment.firebaseDbUrl}${this.userId}/quotes.json`, quote).pipe(
         catchError(this.handleError),
       tap((data) => {
         const newQuote = {
@@ -71,11 +76,12 @@ export class QuoteService {
 
   deleteQuote(id: string) {
     return this.http.delete<void>(`
-    ${environment.firebaseDbUrl}quotes/${id}.json`).pipe(
+    ${environment.firebaseDbUrl}${this.userId}/quotes/${id}.json`).pipe(
       catchError(this.handleError),
       tap(() => {
         const updatedQuoteList = this.quoteListSub.value.filter(q => q.id !== id);
         this.quoteListSub.next(updatedQuoteList);
+        this.totalCount = this.quoteListSub.value.length
         this.filteredQuoteList.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
       })
     )
@@ -87,7 +93,7 @@ export class QuoteService {
       tier: quote.tier,
       extras: quote.extras
     }
-    return this.http.put<void>(`${environment.firebaseDbUrl}quotes/${quote.id}.json`, updatedQuote).pipe(
+    return this.http.put<void>(`${environment.firebaseDbUrl}${this.userId}/quotes/${quote.id}.json`, updatedQuote).pipe(
       tap((data) => {
         const updatedQuotes = this.quoteListSub.value.map((q) => (q.id === quote.id) ? quote : q)
         this.quoteListSub.next(updatedQuotes)

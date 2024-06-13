@@ -1,6 +1,12 @@
 <div class="list-group-item d-flex justify-content-between align-items-center mb-2" appSelectedQuote>
   <div>
-    <input #checkQuote class="form-check-input me-3" type="checkbox" (change)="selectQuote()" />
+    <input
+      #checkQuote
+      class="form-check-input me-3"
+      type="checkbox"
+      (change)="selectQuote()"
+      [ngStyle]="{'cursor': 'pointer'}"
+    />
     <a class="link-light" [routerLink]="['/quotes', quote.id]">{{ quote.name | shorten: 15 }}</a>
   </div>
 </div>

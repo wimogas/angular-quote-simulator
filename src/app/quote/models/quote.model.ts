@@ -1,5 +1,6 @@
 export interface IQuote {
   id?: string,
+  userId?: string,
   name: string,
   tier: 'basic' | 'premium' |'enterprise',
   extras?: string[],
