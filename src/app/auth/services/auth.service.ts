@@ -81,7 +81,7 @@ export class AuthService {
       parsedUser.email,
       parsedUser.id,
       parsedUser._token,
-      new Date(parsedUser._expirationDate)
+      parsedUser._tokenExpirationDate
     )
     if(newUser.token) {
       this.user.next(newUser)
