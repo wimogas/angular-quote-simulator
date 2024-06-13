@@ -16,6 +16,10 @@ interface QuoteResponse {
 export class QuoteService {
 
   quoteListSub = new BehaviorSubject<IQuote[]>([])
+  filteredQuoteList = new BehaviorSubject<IQuote[]>([])
+  page = 1;
+  limit = 10;
+  totalCount = 0;
 
   constructor(
     private http: HttpClient,
@@ -33,13 +37,15 @@ export class QuoteService {
           });
         })
         this.quoteListSub.next(quotes)
+        this.totalCount = this.quoteListSub.value.length
+        this.filteredQuoteList.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
       }),
       catchError(this.handleError)
     )
   }
 
-  getQuoteListSubject() {
-    return this.quoteListSub.asObservable();
+  getFilteredQuoteListSubject() {
+    return this.filteredQuoteList.asObservable();
   }
 
   getQuoteById(id: string) {
@@ -47,6 +53,7 @@ export class QuoteService {
   }
 
   addQuote(quote: IQuote) {
+    console.log(quote)
     return this.http.post<any>(
       `${environment.firebaseDbUrl}quotes.json`, quote).pipe(
         catchError(this.handleError),
@@ -69,18 +76,36 @@ export class QuoteService {
       tap(() => {
         const updatedQuoteList = this.quoteListSub.value.filter(q => q.id !== id);
         this.quoteListSub.next(updatedQuoteList);
+        this.filteredQuoteList.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
       })
     )
   }
 
   updateQuote(quote: IQuote) {
-    return this.http.put<void>(`${environment.firebaseDbUrl}quotes/${quote.id}.json`, quote).pipe(
-      tap(() => {
+    const updatedQuote = {
+      name: quote.name,
+      tier: quote.tier,
+      extras: quote.extras
+    }
+    return this.http.put<void>(`${environment.firebaseDbUrl}quotes/${quote.id}.json`, updatedQuote).pipe(
+      tap((data) => {
         const updatedQuotes = this.quoteListSub.value.map((q) => (q.id === quote.id) ? quote : q)
-        console.log(updatedQuotes)
         this.quoteListSub.next(updatedQuotes)
+        return this.router.navigate(['/quotes'])
       })
     );
+  }
+
+  pageUp() {
+    this.page += this.limit
+    this.filteredQuoteList.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
+
+  }
+
+  pageDown() {
+    this.page -= this.limit
+    this.filteredQuoteList.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
+
   }
 
   calculateFinalPrice(product: Product): number {

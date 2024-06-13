@@ -85,6 +85,8 @@ export class AuthService {
     )
     if(newUser.token) {
       this.user.next(newUser)
+    } else {
+      localStorage.removeItem(`${environment.localStoreKey}`)
     }
   }
 

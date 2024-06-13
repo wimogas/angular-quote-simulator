@@ -1,5 +1,5 @@
 <div class="p-3">
-  <h2 class="mb-3">New Quote</h2>
+  <h2 class="my-2">New Quote</h2>
   <div class="alert alert-danger" *ngIf="error">Error getting Quotes...</div>
   <form
     [formGroup]="newQuoteForm"
@@ -38,7 +38,8 @@
       </div>
     </div>
     <div class="d-flex justify-content-end">
-      <button class="btn btn-success" [disabled]="!newQuoteForm.valid" >Add</button>
+      <button class="btn btn-secondary me-2" type="button" routerLink="/quotes" >Cancel</button>
+      <button class="btn btn-success" [disabled]="!newQuoteForm.valid" type="submit" >Add</button>
     </div>
   </form>
 </div>

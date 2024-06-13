@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {IQuote} from "../../models/quote.model";
 
 @Component({
@@ -8,11 +8,11 @@ import {IQuote} from "../../models/quote.model";
 })
 export class QuoteListItemComponent {
   @Input() quote!: IQuote;
-  @Output() modalLaunched = new EventEmitter();
+  @Output() quoteSelected = new EventEmitter();
 
   constructor() {}
 
-  showModal() {
-    this.modalLaunched.emit(this.quote!.id!)
+  selectQuote() {
+    this.quoteSelected.emit(this.quote!)
   }
 }

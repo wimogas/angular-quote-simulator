@@ -34,7 +34,10 @@ export class QuoteFormComponent implements OnDestroy {
     this.quote.name = this.newQuoteForm.value.quoteName
     this.quote.tier = this.newQuoteForm.value.tier
     this.quote.extras = this.newQuoteForm.value.extras
+    this.quote.createdAt = new Date()
+    console.log(this.quote)
     this.changesSaved = true
+
     this.subscriptions.push(
       this.quoteService.addQuote(this.quote).subscribe()
     )

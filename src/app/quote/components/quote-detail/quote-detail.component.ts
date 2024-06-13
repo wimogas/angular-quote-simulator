@@ -64,7 +64,6 @@ export class QuoteDetailComponent implements OnInit, OnDestroy {
         this.quoteService.updateQuote(this.quote).subscribe()
       )
     }
-    this.router.navigate(['../'], {relativeTo: this.route})
   }
 
   get extras(): FormArray {

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostBinding, OnDestroy, OnInit} from '@angular/core';
 import {QuoteService} from "../../services/quote.service";
 import {IQuote} from "../../models/quote.model";
 import {Subscription} from "rxjs";
@@ -10,11 +10,13 @@ import {Subscription} from "rxjs";
 })
 export class QuoteListComponent implements OnInit, OnDestroy {
   quoteList : IQuote[] = []
-  quoteFilter: string = '';
+  page = 0;
+  lastPage = 0;
+  limit = 2;
+  selectedQuotes: IQuote[] = []
   isLoading: boolean = false;
   error: string | null = null
   isModalVisible: boolean = false;
-  deleteQuoteId: string = ''
 
   private subscriptions: Subscription[] = [];
 
@@ -24,8 +26,10 @@ export class QuoteListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(
-      this.quoteService.getQuoteListSubject().subscribe(data => {
+      this.quoteService.getFilteredQuoteListSubject().subscribe(data => {
           this.quoteList = data
+          this.lastPage = this.quoteService.totalCount
+          this.limit = this.quoteService.limit
         }
       )
     )
@@ -37,16 +41,37 @@ export class QuoteListComponent implements OnInit, OnDestroy {
     this.isModalVisible = false
   }
 
-  onModalLaunched(id: string) {
+  showModal() {
     this.isModalVisible = true
-    this.deleteQuoteId = id
+  }
+
+  onQuoteSelected(quote: IQuote) {
+    const foundIndex = this.selectedQuotes.indexOf(quote)
+    if (foundIndex >= 0) {
+      this.selectedQuotes = this.selectedQuotes.filter((q,i) => i !== foundIndex)
+    } else {
+      this.selectedQuotes.push(quote)
+    }
   }
 
   deleteQuote() {
-    this.subscriptions.push(
-      this.quoteService.deleteQuote(this.deleteQuoteId).subscribe()
-    )
+    this.selectedQuotes.forEach(quote => {
+      this.subscriptions.push(
+        this.quoteService.deleteQuote(quote!.id!).subscribe()
+      )
+    })
+
     this.isModalVisible = false;
+  }
+
+  paginateUp() {
+    this.page += 2
+    this.quoteService.pageUp()
+  }
+
+  paginateDown() {
+    this.page -= 2
+    this.quoteService.pageDown()
   }
 
   ngOnDestroy() {

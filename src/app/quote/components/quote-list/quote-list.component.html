@@ -1,37 +1,37 @@
 <div class="container-fluid p-3">
-  <div class="row mb-2">
-    <div class="col-8">
-      <h2>Quotes</h2>
+  <div class="row mb-2 pe-3">
+    <div class="col-11">
+      <h2 class="my-2">Quotes</h2>
     </div>
-    <div class="col-4">
-      <input
-        class="form-control"
-        type="text"
-        name="quoteFilter"
-        [(ngModel)]="quoteFilter"
-        placeholder="Filter quotes"
-      />
+    <div class="col-1">
+      <button *ngIf="selectedQuotes.length > 0" class="btn btn-danger" (click)="showModal()"><i class="bi-trash"></i></button>
     </div>
-
   </div>
 
   <app-spinner *ngIf="isLoading"></app-spinner>
 
   <div class="list-group" *ngIf="!isLoading && quoteList.length > 0">
     <app-quote-list-item
-      *ngFor="let quote of quoteList | filter:quoteFilter"
+      *ngFor="let quote of quoteList"
       [quote]="quote"
-      (modalLaunched)="onModalLaunched($event)"></app-quote-list-item>
+      (quoteSelected)="onQuoteSelected($event)"
+    ></app-quote-list-item>
   </div>
   <div class="alert alert-danger" *ngIf="error">Error getting Quotes...</div>
-</div>
+
+  <div class="d-flex justify-content-end">
+    <button class="btn btn-secondary me-2" (click)="paginateDown()" [disabled]="page <= 0">Previous</button>
+    <button class="btn btn-secondary" (click)="paginateUp()" [disabled]="(page + limit) >= lastPage">Next</button>
+  </div>
+ </div>
+
 <ng-container *ngIf="isModalVisible">
   <app-modal
-    title="Deleting Quote"
+    title="Deleting Quotes"
     (onCloseModal)="closeModal()"
   >
     <div class="d-flex justify-content-start mb-4">
-      <p>Are you sure?</p>
+      <p>Are you sure you want to proceed?</p>
     </div>
     <div class="d-flex justify-content-end">
       <button class="btn btn-secondary me-2" (click)="closeModal()">Cancel</button>

@@ -3,9 +3,9 @@ export interface IQuote {
   name: string,
   tier: 'basic' | 'premium' |'enterprise',
   extras?: string[],
+  createdAt?: Date,
   company?: string,
-  productId?: string,
-  totalPrice?: number
+  totalPrice?: number,
 }
 
 export class Quote {
@@ -13,8 +13,8 @@ export class Quote {
     public name: string = '',
     public tier: 'basic' | 'premium' |'enterprise' = 'basic',
     public extras: string[] = [],
+    public createdAt: Date = new Date(),
     public company?: string,
-    public productId?: string,
     public totalPrice?: number,
   ) {
   }
