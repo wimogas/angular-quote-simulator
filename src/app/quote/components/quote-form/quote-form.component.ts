@@ -1,22 +1,20 @@
-import {Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {QuoteService} from "../../services/quote.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {IQuote, Quote} from "../../models/quote.model";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-quote-form',
   templateUrl: './quote-form.component.html',
   styleUrl: './quote-form.component.scss'
 })
-export class QuoteFormComponent implements OnDestroy {
+export class QuoteFormComponent {
   quote: IQuote = new Quote();
   tiers: string[] = ['basic', 'premium', 'enterprise']
   changesSaved: boolean = false;
   newQuoteForm!: FormGroup
   error: string | null = null
-  private subscriptions: Subscription[] = [];
 
   constructor(
     private quoteService: QuoteService,
@@ -35,12 +33,13 @@ export class QuoteFormComponent implements OnDestroy {
     this.quote.tier = this.newQuoteForm.value.tier
     this.quote.extras = this.newQuoteForm.value.extras
     this.quote.createdAt = new Date()
-    console.log(this.quote)
     this.changesSaved = true
 
-    this.subscriptions.push(
-      this.quoteService.addQuote(this.quote).subscribe()
-    )
+    this.quoteService.addQuote(this.quote).subscribe({
+      next: () => this.router.navigate(['/quotes']),
+      error: err => console.log(err),
+    })
+
   }
 
   get extras(): FormArray {
@@ -55,7 +54,4 @@ export class QuoteFormComponent implements OnDestroy {
     this.extras.removeAt(i)
   }
 
-  ngOnDestroy(): void {
-    this.subscriptions.forEach(sub => sub.unsubscribe())
-  }
 }

@@ -59,7 +59,6 @@ export class AuthComponent {
 
     authFn.subscribe({
       next: data => {
-        console.log(data)
         this.isLoading = false
         this.router.navigate(['/'])
       } ,

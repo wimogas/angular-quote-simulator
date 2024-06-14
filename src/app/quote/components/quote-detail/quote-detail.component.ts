@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {
   ActivatedRoute,
   Router,
@@ -18,7 +18,7 @@ import {Subscription} from "rxjs";
   templateUrl: './quote-detail.component.html',
   styleUrl: './quote-detail.component.scss'
 })
-export class QuoteDetailComponent implements OnInit, OnDestroy {
+export class QuoteDetailComponent implements OnInit {
   quote?: IQuote;
   tiers: string[] = ['basic', 'premium', 'enterprise']
   changesSaved: boolean = false;
@@ -60,9 +60,12 @@ export class QuoteDetailComponent implements OnInit, OnDestroy {
       this.quote.name = this.quoteForm.value.quoteName
       this.quote.tier = this.quoteForm.value.tier
       this.quote.extras = this.quoteForm.value.extras
-      this.subscriptions.push(
-        this.quoteService.updateQuote(this.quote).subscribe()
-      )
+
+      this.quoteService.updateQuote(this.quote).subscribe({
+        next: () => this.router.navigate(['/quotes']),
+        error: (err) => console.log(err)
+      })
+
     }
   }
 
@@ -76,9 +79,5 @@ export class QuoteDetailComponent implements OnInit, OnDestroy {
 
   removeExtra(i: number) {
     this.extras.removeAt(i)
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.forEach(sub => sub.unsubscribe())
   }
 }

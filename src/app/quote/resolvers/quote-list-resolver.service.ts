@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {ActivatedRouteSnapshot, MaybeAsync, Resolve, RouterStateSnapshot} from "@angular/router";
 import {QuoteService} from "../services/quote.service";
-import {catchError, of} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -13,14 +12,6 @@ export class QuoteListResolverService implements Resolve<any>{
   ) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<any> {
-    console.log("resolving...")
-    return this.quoteService.getQuoteList().pipe(
-      catchError(error => {
-        return of({
-          error: true,
-          message: error.message
-        })
-      })
-    );
+    return this.quoteService.fetchQuoteList();
   }
 }

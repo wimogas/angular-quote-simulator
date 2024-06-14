@@ -1,4 +1,4 @@
-import {Component, HostBinding, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {QuoteService} from "../../services/quote.service";
 import {IQuote} from "../../models/quote.model";
 import {Subscription} from "rxjs";
@@ -26,15 +26,13 @@ export class QuoteListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(
-      this.quoteService.getFilteredQuoteListSubject().subscribe(data => {
+      this.quoteService.getFilteredQuoteList().subscribe(data => {
           this.quoteList = data
           this.lastPage = this.quoteService.totalCount
           this.limit = this.quoteService.limit
         }
       )
     )
-
-    this.quoteService.getQuoteList().subscribe()
   }
 
   closeModal() {
@@ -56,9 +54,9 @@ export class QuoteListComponent implements OnInit, OnDestroy {
 
   deleteQuote() {
     this.selectedQuotes.forEach(quote => {
-      this.subscriptions.push(
-        this.quoteService.deleteQuote(quote!.id!).subscribe()
-      )
+       this.quoteService.deleteQuote(quote!.id!).subscribe({
+         error: (err) => console.log(err)
+       })
     })
 
     this.isModalVisible = false;

@@ -7,7 +7,5 @@ import { Component } from '@angular/core';
 })
 export class QuoteComponent {
 
-  constructor() {
-    console.log("initializing QuoteComponent")
-  }
+  constructor() {}
 }
