@@ -10,7 +10,7 @@ import {Subscription} from "rxjs";
 })
 export class QuoteListComponent implements OnInit, OnDestroy {
   quoteList : IQuote[] = []
-  page = 0;
+  page = 1;
   lastPage = 0;
   limit = 2;
   selectedQuotes: IQuote[] = []
@@ -29,6 +29,7 @@ export class QuoteListComponent implements OnInit, OnDestroy {
       this.quoteService.getFilteredQuoteList().subscribe(data => {
           this.quoteList = data
           this.lastPage = this.quoteService.totalCount
+          this.page = this.quoteService.page
           this.limit = this.quoteService.limit
         }
       )

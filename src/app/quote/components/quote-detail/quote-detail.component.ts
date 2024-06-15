@@ -23,7 +23,6 @@ export class QuoteDetailComponent implements OnInit {
   tiers: string[] = ['basic', 'premium', 'enterprise']
   changesSaved: boolean = false;
   quoteForm!: FormGroup
-  private subscriptions: Subscription[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +31,9 @@ export class QuoteDetailComponent implements OnInit {
     this.quoteForm = new FormGroup<any>({
       quoteName: new FormControl('', [Validators.required, Validators.minLength(3)]),
       tier: new FormControl('', Validators.required),
-      extras: new FormArray([])
+      extras: new FormArray([]),
+      company: new FormControl(''),
+      totalPrice: new FormControl('')
     })
   }
 
@@ -43,6 +44,8 @@ export class QuoteDetailComponent implements OnInit {
         this.quote = foundQuote
         this.quoteForm.get('quoteName')?.setValue(foundQuote.name)
         this.quoteForm.get('tier')?.setValue(foundQuote.tier)
+        this.quoteForm.get('company')?.setValue(foundQuote.company)
+        this.quoteForm.get('totalPrice')?.setValue(foundQuote.totalPrice)
         if (foundQuote.extras) {
           foundQuote.extras.forEach(extra => {
             this.addExtra(extra);
@@ -60,6 +63,8 @@ export class QuoteDetailComponent implements OnInit {
       this.quote.name = this.quoteForm.value.quoteName
       this.quote.tier = this.quoteForm.value.tier
       this.quote.extras = this.quoteForm.value.extras
+      this.quote.company = this.quoteForm.value.company
+      this.quote.totalPrice = this.quoteForm.value.totalPrice
 
       this.quoteService.updateQuote(this.quote).subscribe({
         next: () => this.router.navigate(['/quotes']),

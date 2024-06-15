@@ -1,5 +1,8 @@
 <div class="p-3">
-  <h2 class="my-2">New Quote</h2>
+  <div class="d-flex justify-content-between">
+    <h2 class="my-2">New Quote</h2>
+    <button class="btn btn-danger" type="button" (click)="generateFake()">Generate Fake Quote</button>
+  </div>
   <div class="alert alert-danger" *ngIf="error">Error getting Quotes...</div>
   <form
     [formGroup]="newQuoteForm"
@@ -17,6 +20,13 @@
       <span class="text-danger" *ngIf="newQuoteForm.get('quoteName')?.errors?.['forbiddenName']">Invalid name. </span>
       <span class="text-danger" *ngIf="newQuoteForm.get('quoteName')?.errors?.['minlength']">Min length is 3. </span>
     </div>
+    <label class="form-label">Company</label>
+    <input
+      class="form-control mb-2"
+      type="text"
+      name="company"
+      formControlName="company"
+    />
     <label class="form-label">Tier</label>
     <div *ngFor="let tier of tiers">
       <label>
@@ -26,7 +36,7 @@
           [value]="tier"
           formControlName="tier"
         />
-        {{tier}}
+        {{tier | capitalize}}
       </label>
     </div>
     <label class="form-label">Extras</label>
@@ -37,6 +47,13 @@
         <button class="btn btn-danger" type="button" (click)="removeExtra(i)"><i class="bi-trash"></i></button>
       </div>
     </div>
+    <label class="form-label">Total Price</label>
+    <input
+      class="form-control mb-2"
+      type="number"
+      name="totalPrice"
+      formControlName="totalPrice"
+    />
     <div class="d-flex justify-content-end">
       <button class="btn btn-secondary me-2" type="button" routerLink="/quotes" >Cancel</button>
       <button class="btn btn-success" [disabled]="!newQuoteForm.valid" type="submit" >Add</button>

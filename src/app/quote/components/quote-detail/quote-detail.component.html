@@ -11,6 +11,13 @@
       name="quoteName"
       formControlName="quoteName"
     />
+    <label class="form-label">Company</label>
+    <input
+      class="form-control mb-2"
+      type="text"
+      name="company"
+      formControlName="company"
+    />
     <div class="mt-2" *ngIf="!quoteForm.get('quoteName')?.valid && quoteForm.get('quoteName')?.touched">
       <span class="text-danger" *ngIf="quoteForm.get('quoteName')?.errors?.['required'] ">Please add a name to the quote. </span>
       <span class="text-danger" *ngIf="quoteForm.get('quoteName')?.errors?.['forbiddenName']">Invalid name. </span>
@@ -25,7 +32,7 @@
           [value]="tier"
           formControlName="tier"
         />
-        {{tier}}
+        {{tier | capitalize}}
       </label>
     </div>
     <label class="form-label">Extras</label>
@@ -36,6 +43,13 @@
         <button class="btn btn-danger" type="button" (click)="removeExtra(i)"><i class="bi-trash"></i></button>
       </div>
     </div>
+    <label class="form-label">Total Price</label>
+    <input
+      class="form-control mb-2"
+      type="number"
+      name="totalPrice"
+      formControlName="totalPrice"
+    />
     <div class="d-flex justify-content-end">
       <button class="btn btn-secondary me-2" type="button" routerLink="/quotes" >Cancel</button>
       <button class="btn btn-primary" [disabled]="!quoteForm.valid" type="submit" >Save</button>

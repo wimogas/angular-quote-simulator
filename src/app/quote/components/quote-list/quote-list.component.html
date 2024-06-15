@@ -1,14 +1,14 @@
 <div class="container-fluid p-3">
-  <div class="row mb-2 pe-3">
-    <div class="col-11">
-      <h2 class="my-2">Quotes ({{ lastPage }})</h2>
+  <div class="d-flex justify-content-between mb-2 pe-3">
+    <div>
+      <h2 class="my-2">Quotes</h2>
     </div>
-    <div class="col-1">
+    <div>
       <button *ngIf="selectedQuotes.length > 0" class="btn btn-danger" (click)="showModal()"><i class="bi-trash"></i></button>
     </div>
   </div>
 
-  <app-quote-filter-form *ngIf="quoteList.length > 0"></app-quote-filter-form>
+  <app-quote-filter-form></app-quote-filter-form>
 
   <app-spinner *ngIf="isLoading"></app-spinner>
 
@@ -38,23 +38,26 @@
           <a class="link link-light" [routerLink]="['/quotes', quote.id]">{{ quote.name | shorten: 15 | capitalize}}</a>
         </td>
         <td>
-          <span class="">test</span>
+          <span class="">{{ quote.company }}</span>
         </td>
         <td>
           <span class="badge rounded-pill bg-secondary">{{ quote.tier | capitalize }}</span>
         </td>
-        <td>
+        <td class="d-flex justify-content-end">
           <button class="btn btn-dark" [routerLink]="['/quotes', quote.id]"><i class="bi-pencil"></i></button>
         </td>
       </tr>
       </tbody>
     </table>
   </ng-container>
+  <div class="my-3" *ngIf="quoteList.length === 0">
+    No quotes found.
+  </div>
 
   <div class="alert alert-danger" *ngIf="error">Error getting Quotes...</div>
 
   <div class="d-flex justify-content-end">
-    <button class="btn btn-secondary me-2" (click)="paginateDown()" [disabled]="page <= 0">Previous</button>
+    <button class="btn btn-secondary me-2" (click)="paginateDown()" [disabled]="(page - limit) <= 0">Previous</button>
     <button class="btn btn-secondary" (click)="paginateUp()" [disabled]="(page + limit) >= lastPage">Next</button>
   </div>
  </div>

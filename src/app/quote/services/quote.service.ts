@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Product} from "../models/product.model";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {BehaviorSubject, catchError, map, Subject, tap, throwError} from "rxjs";
+import {BehaviorSubject, catchError, filter, map, Subject, tap, throwError} from "rxjs";
 import {IQuote, Quote} from "../models/quote.model";
 import {environment} from "../../../environments/environment";
 import {Router} from "@angular/router";
@@ -9,6 +9,10 @@ import {AuthService} from "../../auth/services/auth.service";
 
 interface QuoteResponse {
   [key: string]: IQuote;
+}
+
+export type Obj = {
+  [key: string]: string
 }
 
 @Injectable({
@@ -36,6 +40,7 @@ export class QuoteService {
   fetchQuoteList() {
     return this.http.get<QuoteResponse>(`${environment.firebaseDbUrl}${this.userId}/quotes.json`).pipe(
       tap(data => {
+        if (data) {
           let quotes: IQuote[] = []
           Object.entries(data).map(([key, value]) => {
             quotes.push({
@@ -46,6 +51,8 @@ export class QuoteService {
           this.quoteListSub.next(quotes)
           this.totalCount = this.quoteListSub.value.length
           this.filteredQuoteListSub.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
+
+        }
       }),
       catchError(this.handleError)
     )
@@ -104,6 +111,22 @@ export class QuoteService {
     );
   }
 
+  filterQuotes(filters: Obj) {
+    return this.quoteListSub.pipe(
+      tap(quotes => {
+        const filteredQuotes = quotes.filter(quote =>
+          Object.keys(filters).every(key =>
+            filters[key] === '' || quote[key as keyof IQuote]?.toString().toLowerCase().includes(filters[key].toLowerCase())
+          )
+        )
+        this.totalCount = filteredQuotes.length
+        this.page = 1
+        this.filteredQuoteListSub.next(filteredQuotes.slice(this.page-1, (this.limit*this.page)))
+
+      })
+    )
+  }
+
   pageUp() {
     this.page += this.limit
     this.filteredQuoteListSub.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
@@ -114,34 +137,6 @@ export class QuoteService {
     this.page -= this.limit
     this.filteredQuoteListSub.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
 
-  }
-
-  calculateFinalPrice(product: Product): number {
-    let basePrice: number;
-
-    // Set base price based on tier
-    switch (product.tier) {
-      case 'basic':
-        basePrice = 7000;
-        break;
-      case 'premium':
-        basePrice = 12000;
-        break;
-      case 'enterprise':
-        basePrice = 20000;
-        break;
-      default:
-        basePrice = 0;
-    }
-
-    // Calculate price based on addons and skus
-    let totalPrice = basePrice;
-    totalPrice += product.addons.reduce((acc, curr) => acc + curr, 0 )
-    totalPrice += product.skus * (product.skus > 10000 ? 0.1 : 0.5);
-
-    // Apply any region-specific adjustments
-
-    return totalPrice;
   }
 
   handleError(error: HttpErrorResponse) {
