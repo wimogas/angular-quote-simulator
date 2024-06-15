@@ -1,5 +1,7 @@
 # Quote Simulator
 
+[Visit DEMO](https://quote-sim.vercel.app/)
+
 This project is a Front-End Web application developed using Angular version 18.0.0 and TypeScript version 5.4.2. The Quote Simulator is designed to facilitate and simulate the retrieval of quotes for various products or services. It aims to provide users with an interactive and user-friendly experience to simulate estimates for their required services/products and help them make informed decisions.
 
 ## Getting Started

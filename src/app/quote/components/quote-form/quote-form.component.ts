@@ -61,7 +61,6 @@ export class QuoteFormComponent {
 
   generateFake() {
     const fakeQuote = generateQuote()
-    console.log(fakeQuote)
     this.newQuoteForm.setValue({
       quoteName: fakeQuote.name,
       tier: fakeQuote.tier,
