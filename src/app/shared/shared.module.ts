@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import {ShortenPipe} from "./pipes/shorten.pipe";
 import {SpinnerComponent} from "./components/spinner/spinner.component";
 import {ModalComponent} from "./components/modal/modal.component";
+import {CapitalizePipe} from "./pipes/capitalize.pipe";
 
 @NgModule({
   declarations: [
     SpinnerComponent,
     ModalComponent,
-    ShortenPipe
+    ShortenPipe,
+    CapitalizePipe
   ],
   imports: [
     CommonModule
@@ -17,7 +19,8 @@ import {ModalComponent} from "./components/modal/modal.component";
     CommonModule,
     SpinnerComponent,
     ModalComponent,
-    ShortenPipe
+    ShortenPipe,
+    CapitalizePipe
   ]
 })
 export class SharedModule { }

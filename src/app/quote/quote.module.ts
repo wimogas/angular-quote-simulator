@@ -10,6 +10,7 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {SelectedQuoteDirective} from "./directives/selected-quote.directive";
 import {QuoteDetailComponent} from "./components/quote-detail/quote-detail.component";
 import {SharedModule} from "../shared/shared.module";
+import {QuoteFilterFormComponent} from "./components/quote-filter/quote-filter.component";
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import {SharedModule} from "../shared/shared.module";
     QuoteListItemComponent,
     QuoteFormComponent,
     QuoteDetailComponent,
+    QuoteFilterFormComponent,
     SelectedQuoteDirective,
     FilterPipe,
   ],
