@@ -11,7 +11,7 @@ import {Subscription} from "rxjs";
   templateUrl: './quote-form.component.html',
   styleUrl: './quote-form.component.scss'
 })
-export class QuoteFormComponent {
+export class QuoteFormComponent implements OnInit, OnDestroy{
   quote: IQuote = new Quote();
   tiers: string[] = ['basic', 'premium', 'enterprise']
   changesSaved: boolean = false;
@@ -19,7 +19,7 @@ export class QuoteFormComponent {
   error: string | null = null
   showModal = false
   subscription: Subscription = new Subscription()
-  quoteList: IQuote[] = []
+  quoteList: number = 0
 
   constructor(
     private quoteService: QuoteService,
@@ -34,6 +34,12 @@ export class QuoteFormComponent {
     })
   }
 
+  ngOnInit() {
+    this.subscription = this.quoteService.quoteListSub.subscribe(
+      data => this.quoteList = data.length
+    )
+  }
+
   addQuote() {
     this.quote.name = this.newQuoteForm.value.quoteName
     this.quote.tier = this.newQuoteForm.value.tier
@@ -43,7 +49,7 @@ export class QuoteFormComponent {
     this.quote.totalPrice = this.newQuoteForm.value.totalPrice
 
     this.changesSaved = true
-    if (this.quoteList.length < 25) {
+    if (this.quoteList < 25) {
       this.quoteService.addQuote(this.quote).subscribe({
         next: () => this.router.navigate(['/quotes']),
         error: err => console.log(err),
