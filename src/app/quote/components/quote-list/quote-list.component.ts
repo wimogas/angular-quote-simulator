@@ -11,8 +11,8 @@ import {Subscription} from "rxjs";
 export class QuoteListComponent implements OnInit, OnDestroy {
   quoteList : IQuote[] = []
   page = 1;
-  lastPage = 0;
-  limit = 2;
+  lastPage = -1;
+  limit = 10;
   selectedQuotes: IQuote[] = []
   isLoading: boolean = false;
   error: string | null = null
@@ -26,7 +26,7 @@ export class QuoteListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscriptions.push(
-      this.quoteService.getFilteredQuoteList().subscribe(data => {
+      this.quoteService.getPaginatedQuoteList().subscribe(data => {
           this.quoteList = data
           this.lastPage = this.quoteService.totalCount
           this.page = this.quoteService.page

@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import {Product} from "../models/product.model";
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
 import {BehaviorSubject, catchError, filter, map, Subject, tap, throwError} from "rxjs";
-import {IQuote, Quote} from "../models/quote.model";
+import {IQuote} from "../models/quote.model";
 import {environment} from "../../../environments/environment";
-import {Router} from "@angular/router";
 import {AuthService} from "../../auth/services/auth.service";
+import {fi} from "@faker-js/faker";
 
 interface QuoteResponse {
   [key: string]: IQuote;
@@ -21,9 +20,9 @@ export type Obj = {
 export class QuoteService {
 
   quoteListSub = new BehaviorSubject<IQuote[]>([])
-  filteredQuoteListSub = new BehaviorSubject<IQuote[]>([])
-  readonly filteredQuoteList = this.filteredQuoteListSub.asObservable()
+  paginatedQuoteListSub = new BehaviorSubject<IQuote[]>([])
 
+  readonly paginatedQuoteList = this.paginatedQuoteListSub.asObservable()
   page = 1;
   limit = 10;
   totalCount = 0;
@@ -31,7 +30,6 @@ export class QuoteService {
 
   constructor(
     private http: HttpClient,
-    private router: Router,
     private authService: AuthService
   ) {
     this.userId = this.authService.user.value!.id
@@ -49,17 +47,16 @@ export class QuoteService {
             });
           })
           this.quoteListSub.next(quotes)
-          this.totalCount = this.quoteListSub.value.length
-          this.filteredQuoteListSub.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
-
+          this.totalCount = this.totalPages(quotes.length)
+          this.setPaginatedQuoteList(this.quoteListSub.value)
         }
       }),
       catchError(this.handleError)
     )
   }
 
-  getFilteredQuoteList() {
-    return this.filteredQuoteList
+  getPaginatedQuoteList() {
+    return this.paginatedQuoteList
   }
 
   getQuoteById(id: string) {
@@ -78,7 +75,9 @@ export class QuoteService {
           }
           const updatedQuoteList = [...this.quoteListSub.value, newQuote]
           this.quoteListSub.next(updatedQuoteList)
-          this.filteredQuoteListSub.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
+          this.page = 1
+          this.totalCount = this.totalPages(updatedQuoteList.length)
+          this.setPaginatedQuoteList(this.quoteListSub.value)
         })
     )
   }
@@ -90,8 +89,11 @@ export class QuoteService {
       tap(() => {
         const updatedQuoteList = this.quoteListSub.value.filter(q => q.id !== id);
         this.quoteListSub.next(updatedQuoteList);
-        this.totalCount = this.quoteListSub.value.length
-        this.filteredQuoteListSub.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
+        this.totalCount = this.totalPages(updatedQuoteList.length)
+        if(this.page > this.totalCount) {
+          this.page = this.totalCount
+        }
+        this.setPaginatedQuoteList(this.quoteListSub.value)
       })
     )
   }
@@ -119,24 +121,36 @@ export class QuoteService {
             filters[key] === '' || quote[key as keyof IQuote]?.toString().toLowerCase().includes(filters[key].toLowerCase())
           )
         )
-        this.totalCount = filteredQuotes.length
+        this.totalCount = this.totalPages(filteredQuotes.length)
         this.page = 1
-        this.filteredQuoteListSub.next(filteredQuotes.slice(this.page-1, (this.limit*this.page)))
-
+        this.setPaginatedQuoteList(filteredQuotes)
       })
     )
   }
 
   pageUp() {
-    this.page += this.limit
-    this.filteredQuoteListSub.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
+    if (this.page < this.totalCount) {
+      this.page += 1
+      this.setPaginatedQuoteList(this.quoteListSub.value)
+    }
 
   }
 
   pageDown() {
-    this.page -= this.limit
-    this.filteredQuoteListSub.next(this.quoteListSub.value.slice(this.page-1, (this.limit*this.page)))
+    if (this.page > 1) {
+      this.page -= 1
+      this.setPaginatedQuoteList(this.quoteListSub.value)
+    }
+  }
 
+  setPaginatedQuoteList(quoteList: IQuote[]) {
+    const start = (this.page - 1) * this.limit;
+    const end = start + this.limit;
+    this.paginatedQuoteListSub.next(quoteList.slice(start, end))
+  }
+
+  totalPages(quoteListLength: number) {
+    return Math.ceil(quoteListLength / this.limit)
   }
 
   handleError(error: HttpErrorResponse) {

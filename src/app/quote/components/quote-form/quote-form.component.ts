@@ -1,9 +1,10 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {QuoteService} from "../../services/quote.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {IQuote, Quote} from "../../models/quote.model";
 import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
 import {generateQuote} from "../../../../mocks/mockQuoteGenerator";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-quote-form',
@@ -16,6 +17,9 @@ export class QuoteFormComponent {
   changesSaved: boolean = false;
   newQuoteForm!: FormGroup
   error: string | null = null
+  showModal = false
+  subscription: Subscription = new Subscription()
+  quoteList: IQuote[] = []
 
   constructor(
     private quoteService: QuoteService,
@@ -39,12 +43,18 @@ export class QuoteFormComponent {
     this.quote.totalPrice = this.newQuoteForm.value.totalPrice
 
     this.changesSaved = true
+    if (this.quoteList.length < 25) {
+      this.quoteService.addQuote(this.quote).subscribe({
+        next: () => this.router.navigate(['/quotes']),
+        error: err => console.log(err),
+      })
+    } else {
+      this.showModal = true
+    }
+  }
 
-    this.quoteService.addQuote(this.quote).subscribe({
-      next: () => this.router.navigate(['/quotes']),
-      error: err => console.log(err),
-    })
-
+  closeModal() {
+    this.showModal = false
   }
 
   get extras(): FormArray {
@@ -73,6 +83,10 @@ export class QuoteFormComponent {
         this.addExtra(extra);
       });
     }
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe()
   }
 
 }

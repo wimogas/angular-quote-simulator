@@ -60,4 +60,19 @@
     </div>
   </form>
 </div>
+<ng-container *ngIf="showModal">
+  <app-modal
+    title="Quotes Limit Reached"
+    (onCloseModal)="closeModal()"
+  >
+    <div class="d-flex justify-content-start mb-4">
+      <p>You have reached the maximum number of Quotes. Upgrade.</p>
+    </div>
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-secondary me-2" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-primary me-2" disabled>Upgrade</button>
+
+    </div>
+  </app-modal>
+</ng-container>
 
