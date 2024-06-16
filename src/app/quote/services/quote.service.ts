@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http";
-import {BehaviorSubject, catchError, filter, map, Subject, tap, throwError} from "rxjs";
+import {BehaviorSubject, catchError, tap, throwError} from "rxjs";
 import {IQuote} from "../models/quote.model";
 import {environment} from "../../../environments/environment";
 import {AuthService} from "../../auth/services/auth.service";
-import {fi} from "@faker-js/faker";
 
 interface QuoteResponse {
   [key: string]: IQuote;
