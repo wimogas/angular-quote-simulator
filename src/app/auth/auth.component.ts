@@ -22,8 +22,8 @@ export class AuthComponent {
     private router: Router
   ) {
     this.authForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      email: ['test@mail.com', [Validators.required, Validators.email]],
+      password: ['123123123', [Validators.required, Validators.minLength(6)]]
     });
   }
 
